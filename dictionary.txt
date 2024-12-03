@@ -1,0 +1,12 @@
+Georgian-English | სახლი | house
+Georgian-English | მეგობარი | friend
+Georgian-English | ცა | sky
+Georgian-Russian | სახლი | дом
+Georgian-Russian | მეგობარი | друг
+Georgian-Russian | ცა | небо
+English-Georgian | house | სახლი
+English-Georgian | friend | მეგობარი
+English-Georgian | sky | ცა
+Russian-Georgian | дом | სახლი
+Russian-Georgian | друг | მეგობარი
+Russian-Georgian | небо | ცა
