@@ -1,0 +1,176 @@
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Menu from "./pages/Menu";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import Reservations from "./pages/Reservations";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import PrivateRoute from "./components/PrivateRoute";
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/reservations" element={<Reservations />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
+
+export default App;
+
+// File: context/AuthContext.js
+import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loggedUser = localStorage.getItem("user");
+    if (loggedUser) setUser(JSON.parse(loggedUser));
+  }, []);
+
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+    navigate("/");
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthContext;
+
+// File: components/Navbar.js
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
+
+const Navbar = () => {
+  const { user, logout } = useContext(AuthContext);
+  return (
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/menu">Menu</Link>
+      <Link to="/cart">Cart</Link>
+      {user ? (
+        <>
+          <Link to="/orders">Orders</Link>
+          <Link to="/reservations">Reservations</Link>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/signup">Signup</Link>
+        </>
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
+
+// File: components/PrivateRoute.js
+import { Outlet, Navigate } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
+
+const PrivateRoute = () => {
+  const { user } = useContext(AuthContext);
+  return user ? <Outlet /> : <Navigate to="/login" />;
+};
+
+export default PrivateRoute;
+
+// File: pages/Home.js
+import React from "react";
+
+const Home = () => {
+  return <h1>Welcome to Our Restaurant</h1>;
+};
+
+export default Home;
+
+// File: pages/Menu.js
+import React from "react";
+
+const Menu = () => {
+  return <h1>Restaurant Menu</h1>;
+};
+
+export default Menu;
+
+// File: pages/Cart.js
+import React from "react";
+
+const Cart = () => {
+  return <h1>Your Cart</h1>;
+};
+
+export default Cart;
+
+// File: pages/Orders.js
+import React from "react";
+
+const Orders = () => {
+  return <h1>Your Orders</h1>;
+};
+
+export default Orders;
+
+// File: pages/Reservations.js
+import React from "react";
+
+const Reservations = () => {
+  return <h1>Table Reservations</h1>;
+};
+
+export default Reservations;
+
+// File: pages/Login.js
+import React from "react";
+
+const Login = () => {
+  return <h1>Login Page</h1>;
+};
+
+export default Login;
+
+// File: pages/Signup.js
+import React from "react";
+
+const Signup = () => {
+  return <h1>Signup Page</h1>;
+};
+
+export default Signup;
